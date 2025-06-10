@@ -1,98 +1,374 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# `nestjs-prisma-api`
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+This repository presents a robust API built with **NestJS** and **Prisma**, demonstrating a solid foundation for backend development in TypeScript. It includes modules for managing users and posts, showcasing efficient data handling with an **SQLite** database.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+---
 
-## Description
+## ✨ Features
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+This API provides comprehensive functionalities for user and post management, including:
 
-## Project setup
+### User Management
 
-```bash
-$ pnpm install
-```
+* **Create User**: Register new users with a unique username and optional display name. Default user settings (SMS enabled, notifications off) are created automatically.
+    * `POST /users`
+        * **Body**:
+            ```json
+            {
+              "username": "string", // Required
+              "displayName": "string" // Optional
+            }
+            ```
+* **Get All Users**: Retrieve a list of all registered users, including their settings and associated posts.
+    * `GET /users`
+* **Get User by ID**: Fetch a specific user by their unique ID, including selected user settings and posts.
+    * `GET /users/:id`
+* **Update User**: Modify existing user details like username or display name. Ensures username uniqueness.
+    * `PATCH /users/:id`
+        * **Body**:
+            ```json
+            {
+              "username": "string", // Optional
+              "displayName": "string" // Optional
+            }
+            ```
+* **Update User Settings**: Adjust user notification preferences (SMS and general notifications).
+    * `PATCH /users/:id/settings`
+        * **Body**:
+            ```json
+            {
+              "smsEnabled": "boolean", // Optional
+              "notificationsOn": "boolean" // Optional
+            }
+            ```
+* **Delete User**: Remove a user and their associated data from the system.
+    * `DELETE /users/:id`
 
-## Compile and run the project
+### Post Management
 
-```bash
-# development
-$ pnpm run start
+* **Create Post**: Create a new post linked to a single user.
+    * `POST /posts`
+        * **Body**:
+            ```json
+            {
+              "title": "string", // Required, max 200 characters
+              "description": "string", // Required
+              "userId": "number" // Required
+            }
+            ```
+* **Create Group Post**: Create a post associated with multiple users (a group post).
+    * `POST /posts/group`
+        * **Body**:
+            ```json
+            {
+              "title": "string", // Required, max 200 characters
+              "description": "string", // Required
+              "userId": ["number"] // Required, array of user IDs
+            }
+            ```
+* **Get All Group Posts**: Retrieve all group posts, including the users associated with them.
+    * `GET /posts/group`
 
-# watch mode
-$ pnpm run start:dev
+---
 
-# production mode
-$ pnpm run start:prod
-```
+## 🚀 Technologies Used
 
-## Run tests
+* **NestJS**: A progressive Node.js framework for building efficient, reliable, and scalable server-side applications.
+* **Prisma**: An open-source ORM that simplifies database access, providing type-safe queries and a modern development experience.
+* **TypeScript**: A typed superset of JavaScript that compiles to plain JavaScript, enhancing code quality and maintainability.
+* **pnpm**: A fast, disk space efficient package manager for Node.js.
+* **SQLite**: A self-contained, high-reliability, embedded, full-featured, public-domain, SQL database engine.
+* **Class-Validator**: A library for declarative validation of class instances.
 
-```bash
-# unit tests
-$ pnpm run test
+---
 
-# e2e tests
-$ pnpm run test:e2e
+## ⚙️ Prerequisites
 
-# test coverage
-$ pnpm run test:cov
-```
+Make sure you have the following tools installed in your development environment:
 
-## Deployment
+* Node.js (v18.19.1, v20.11.1, or >=v22.0.0 recommended)
+* pnpm (v6.11.0, v7.5.6, or >=v8.0.0 recommended)
+* Git
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+---
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+## 💻 Installation
 
-```bash
-$ pnpm install -g @nestjs/mau
-$ mau deploy
-```
+Follow the steps below to set up the project locally:
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+1.  **Clone the repository**:
+    ```bash
+    git clone [https://github.com/daviramosds/nestjs-prisma-api.git](https://github.com/daviramosds/nestjs-prisma-api.git)
+    cd nestjs-prisma-api
+    ```
 
-## Resources
+2.  **Install dependencies** using pnpm:
+    ```bash
+    pnpm install
+    ```
 
-Check out a few resources that may come in handy when working with NestJS:
+3.  **Set up environment variables**:
+    Create a `.env` file in the root of the project based on `.env.example`.
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+    ```dotenv
+    # Prisma supports the native connection string format for PostgreSQL, MySQL, SQLite, SQL Server, MongoDB and CockroachDB.
+    # See the documentation for all the connection string options: [https://pris.ly/d/connection-strings](https://pris.ly/d/connection-strings)
+    DATABASE_URL="file:./dev.db"
+    PORT=3000
+    ```
 
-## Support
+    The project uses SQLite, so the default `DATABASE_URL` points to a local file database.
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+4.  **Generate Prisma Client & Run Migrations**:
+    ```bash
+    pnpm prisma generate
+    pnpm prisma migrate dev
+    ```
+    This will generate the Prisma client and apply the necessary database schema to your SQLite database.
 
-## Stay in touch
+---
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## ▶️ Running the Application
 
-## License
+### Development Mode
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+To run the application in development mode with hot-reload:
+
+* **pnpm:**
+    ```bash
+    pnpm run start:dev
+    ```
+
+The application will be available at `http://localhost:3000` (or the port defined in `.env`).
+
+### Production Mode
+
+To compile and run the application in production mode:
+
+1.  **Compile the TypeScript code:**
+    * **pnpm:**
+        ```bash
+        pnpm build
+        ```
+
+2.  **Start the application:**
+    * **pnpm:**
+        ```bash
+        pnpm start
+        ```
+
+---
+
+## 🌐 API Endpoints
+
+The API exposes the following endpoints for managing users and posts. It is recommended to use tools like [Postman](https://www.postman.com/), [Insomnia](https://insomnia.rest/), or the [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) VS Code extension for testing.
+
+**Base URL:** `http://localhost:3000` (or your configured port)
+
+### User Endpoints
+
+#### `POST /users` - Create a new user
+
+Creates a new user account with a username and optional display name.
+* **Request Body:**
+    ```json
+    {
+      "username": "unique_username",
+      "displayName": "User Display Name"
+    }
+    ```
+* **Success Response (201 Created):** Returns the created user object, including `id`, `username`, `displayName`, and `userSetting`.
+    ```json
+    {
+      "id": 1,
+      "username": "unique_username",
+      "displayName": "User Display Name",
+      "userSetting": {
+        "id": 1,
+        "userId": 1,
+        "smsEnabled": false,
+        "notificationsOn": false
+      }
+    }
+    ```
+
+#### `GET /users` - Get all users
+
+Retrieves a list of all registered users, including their settings and posts.
+* **Response (200 OK):** Returns an array of user objects.
+    ```json
+    [
+      {
+        "id": 1,
+        "username": "user1",
+        "displayName": "User One",
+        "userSetting": {
+          "id": 1,
+          "userId": 1,
+          "smsEnabled": false,
+          "notificationsOn": false
+        },
+        "posts": []
+      }
+    ]
+    ```
+
+#### `GET /users/:id` - Get a single user by ID
+
+Retrieves information about a specific user by their ID.
+* **Response (200 OK):** Returns a single user object.
+    ```json
+    {
+      "id": 1,
+      "username": "user1",
+      "displayName": "User One",
+      "userSetting": {
+        "id": 1,
+        "userId": 1,
+        "smsEnabled": false,
+        "notificationsOn": false
+      },
+      "posts": []
+    }
+    ```
+
+#### `PATCH /users/:id` - Update a user by ID
+
+Updates existing user details such as username or display name.
+* **Request Body:**
+    ```json
+    {
+      "username": "updated_username", // Optional
+      "displayName": "Updated Display Name" // Optional
+    }
+    ```
+* **Response (200 OK):** Returns the updated user object.
+    ```json
+    {
+      "id": 1,
+      "username": "updated_username",
+      "displayName": "Updated Display Name",
+      "userSetting": {
+        "id": 1,
+        "userId": 1,
+        "smsEnabled": false,
+        "notificationsOn": false
+      }
+    }
+    ```
+
+#### `PATCH /users/:id/settings` - Update user settings by ID
+
+Updates a user's SMS and notification settings.
+* **Request Body:**
+    ```json
+    {
+      "smsEnabled": true,     // Optional
+      "notificationsOn": true // Optional
+    }
+    ```
+* **Response (200 OK):** Returns the updated user settings object.
+    ```json
+    {
+      "id": 1,
+      "userId": 1,
+      "smsEnabled": true,
+      "notificationsOn": true
+    }
+    ```
+
+#### `DELETE /users/:id` - Delete a user by ID
+
+Deletes a user and their associated data (e.g., settings, posts).
+* **Response (200 OK):** Returns a confirmation message or the deleted user object.
+    ```json
+    {
+      "id": 1,
+      "username": "user_to_be_deleted",
+      "displayName": "Deleted User",
+      "userSetting": { ... },
+      "posts": [...]
+    }
+    ```
+
+### Post Endpoints
+
+#### `POST /posts` - Create a new post
+
+Creates a new post linked to a single user.
+* **Request Body:**
+    ```json
+    {
+      "title": "My New Post Title",
+      "description": "This is a detailed description of my new post.",
+      "userId": 1
+    }
+    ```
+* **Success Response (201 Created):** Returns the created post object.
+    ```json
+    {
+      "id": 1,
+      "title": "My New Post Title",
+      "description": "This is a detailed description of my new post.",
+      "createdAt": "2025-06-10T18:00:00.000Z",
+      "updatedAt": "2025-06-10T18:00:00.000Z",
+      "userId": 1
+    }
+    ```
+
+#### `POST /posts/group` - Create a new group post
+
+Creates a post associated with multiple users.
+* **Request Body:**
+    ```json
+    {
+      "title": "Group Event Announcement",
+      "description": "Details about the upcoming group event.",
+      "userId": [1, 2, 3]
+    }
+    ```
+* **Success Response (201 Created):** Returns the created group post object, including associated users.
+    ```json
+    {
+      "id": 1,
+      "title": "Group Event Announcement",
+      "description": "Details about the upcoming group event.",
+      "createdAt": "2025-06-10T18:00:00.000Z",
+      "updatedAt": "2025-06-10T18:00:00.000Z",
+      "users": [
+        { "id": 1, "username": "user1" },
+        { "id": 2, "username": "user2" },
+        { "id": 3, "username": "user3" }
+      ]
+    }
+    ```
+
+#### `GET /posts/group` - Get all group posts
+
+Retrieves a list of all group posts, including the users associated with each post.
+* **Response (200 OK):** Returns an array of group post objects.
+    ```json
+    [
+      {
+        "id": 1,
+        "title": "Group Event Announcement",
+        "description": "Details about the upcoming group event.",
+        "createdAt": "2025-06-10T18:00:00.000Z",
+        "updatedAt": "2025-06-10T18:00:00.000Z",
+        "users": [
+          { "id": 1, "username": "user1" },
+          { "id": 2, "username": "user2" }
+        ]
+      }
+    ]
+    ```
+
+---
+
+## 🏗️ Project Structure (Example)
+
+```text
+.
+├── .vscode/
+├── dist/
+├── node_
